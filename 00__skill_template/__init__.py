@@ -6,21 +6,21 @@
 # libraries.  If you use an external library, be sure to include it
 # in the requirements.txt file so the library is installed properly
 # when the skill gets installed later by a user.
-
+import os
 from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
 from mycroft.util.log import LOG
 
 # Each skill is contained within its own class, which inherits base methods
 # from the MycroftSkill class.  You extend this class as shown below.
-
+LOGGER = getLogger(__name__)
 # TODO: Change "Template" to a unique name for your skill
 class TemplateSkill(MycroftSkill):
 
     # The constructor of the skill, which calls MycroftSkill's constructor
     def __init__(self):
-        super(TemplateSkill, self).__init__(name="TemplateSkill")
-        
+        super(Temperature, self).__init__(name="Temperature")
+
         # Initialize working variables used within the skill.
         self.count = 0
 
@@ -48,6 +48,12 @@ class TemplateSkill(MycroftSkill):
             self.count += 1
         else:  # assume "down"
             self.count -= 1
+        self.speak_dialog("count.is.now", data={"count": self.count})
+
+    @intent_handler(IntentBuilder("").require("Bath")
+    def handle_count_intent(self, message):
+        value = int(message.data['Value'].rstrip('%'))
+        self.count = value
         self.speak_dialog("count.is.now", data={"count": self.count})
 
     # The "stop" method defines what Mycroft does when told to stop during
